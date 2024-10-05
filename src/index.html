@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Online Scraper</title>
+</head>
+<body>
+    <h1>My Online Scraper</h1>
+    <form id="scrapeForm">
+        <label for="query">Enter your search query:</label>
+        <input type="text" id="query" name="query"><
+br><br>
+        <label for="limit">Enter limit:</label>
+        <input type="number" id="limit" name="limit" value="1"><br><br>
+        <button type="submit">Scrape</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        const form = document.getElementById('scrapeForm');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); 
+            const query = document.getElementById('query').value;
+            const limit = document.getElementById('limit').value;
+
+            try {
+                const response = await fetch('/scrape', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `query=${query}&limit=${limit}`,
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = '<p>' + data.message + '</p>';
+                } else {
+                    resultDiv.innerHTML = '<p>Error: ' + data.error + '</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p>Error: ' + error + '</p>';
+            }
+        });
+    </script>
+</body>
+</html>
